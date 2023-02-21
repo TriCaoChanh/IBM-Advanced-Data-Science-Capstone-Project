@@ -17,12 +17,12 @@ sns.set_style("whitegrid")
 sns.despine(left=True, bottom=True)
 
 data_url = "https://raw.githubusercontent.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/main/testSample.csv"
-xgb_pipe_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/pipeline/xgb_pipe.pkl?raw=true"
-preprocessor_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/pipeline/preprocessor.pkl?raw=true"
+# xgb_pipe_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/pipeline/xgb_pipe.pkl?raw=true"
+# preprocessor_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/pipeline/preprocessor.pkl?raw=true"
 # dnn_url = "https://raw.githubusercontent.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/main/dnn.json"
 
-# xgb_pipe_url = ".\\pipeline\\xgb_pipe.pkl"
-# preprocessor_url = ".\\pipeline\\preprocessor.pkl"
+xgb_pipe_url = ".\\pipeline\\xgb_pipe.pkl"
+preprocessor_url = ".\\pipeline\\preprocessor.pkl"
 dnn_url = ".\\pipeline\\dnn"
 
 st.title("FRAUD DETECTION WEB APP")
@@ -39,10 +39,10 @@ def load_data():
 
 @st.cache_resource
 def load_model():
-    xgb_pipe = joblib.load(BytesIO(requests.get(xgb_pipe_url).content))
-    preprocessor = joblib.load(BytesIO(requests.get(preprocessor_url).content))
-    # xgb_pipe = joblib.load(xgb_pipe_url)
-    # preprocessor = joblib.load(preprocessor_url)
+#     xgb_pipe = joblib.load(BytesIO(requests.get(xgb_pipe_url).content))
+#     preprocessor = joblib.load(BytesIO(requests.get(preprocessor_url).content))
+    xgb_pipe = joblib.load(xgb_pipe_url)
+    preprocessor = joblib.load(preprocessor_url)
     dnn = keras.models.load_model(dnn_url)
 
     return xgb_pipe, preprocessor, dnn
