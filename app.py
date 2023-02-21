@@ -7,23 +7,29 @@ import seaborn as sns
 from streamlit_folium import folium_static
 import folium
 from datetime import datetime, time
+import joblib
+from tensorflow import keras
+from io import BytesIO
+import requests 
 
 # Set Color Pallete
 custom_colors = ["#ABC9FF", "#FFDEDE", "#FF8B8B", "#EB4747"]
 sns.set_style("whitegrid")
 sns.despine(left=True, bottom=True)
 
+data_url = "https://raw.githubusercontent.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/main/testSample.csv"
+xgb_pipe_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/xgb_pipe.pkl?raw=true"
+preprocessor_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/preprocessor.pkl?raw=true"
+# dnn_url = "https://raw.githubusercontent.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/main/dnn.json"
+dnn_url = ".\\dnn"
+
 st.title("FRAUD DETECTION WEB APP")
 st.markdown("Advanced Data Science Capstone Project offered by IBM on Coursera")
 
-url = "C:\\Users\\ADMIN\\Desktop\\fraud\\fraudTest.csv"
 
 @st.cache_data
-def load_data(nrows):
-    n = 555719 #number of records in file
-    skip = sorted(random.sample(range(1,n),n-nrows))
-
-    df = pd.read_csv(url, skiprows=skip, header=0)
+def load_data():
+    df = pd.read_csv(data_url, on_bad_lines='skip')
     df["dob"] = pd.DatetimeIndex(df["dob"])
     df["trans_date_trans_time"] = pd.DatetimeIndex(df["trans_date_trans_time"])
     df.drop(columns=["Unnamed: 0"], inplace=True)
@@ -31,11 +37,10 @@ def load_data(nrows):
 
 @st.cache_resource
 def load_model():
-    import joblib
-    from tensorflow import keras
-    xgb_pipe = joblib.load("C:\\Users\\ADMIN\\Desktop\\fraud\\pipeline\\xgb_pipe.pkl")
-    preprocessor = joblib.load("C:\\Users\\ADMIN\\Desktop\\fraud\\pipeline\\preprocessor.pkl")
-    dnn = keras.models.load_model("C:\\Users\\ADMIN\\Desktop\\fraud\\pipeline\\deep_nn")
+    xgb_pipe = joblib.load(BytesIO(requests.get(xgb_pipe_url).content))
+    preprocessor = joblib.load(BytesIO(requests.get(preprocessor_url).content))
+    # dnn = keras.models.model_from_json(requests.get(dnn_url).content)
+    dnn = keras.models.load_model(dnn_url)
 
     return xgb_pipe, preprocessor, dnn
 
@@ -149,7 +154,7 @@ def ETL(original_df):
 
 
 ######## LOAD DATA ########
-df = load_data(nrows=30000)
+df = load_data()
 normal = df[df["is_fraud"] == 0]
 fraud = df[df["is_fraud"] == 1]
 
@@ -245,8 +250,11 @@ with st.expander("Create your own transaction"):
             x = preprocessor.transform(record)
             result2 = dnn.predict(x)
 
-            result = pd.DataFrame({"Normal": [result1[0][0], result2[0][0]], "Fraud": [result1[0][1], 1-result2[0][0]]}, index=["XGBoost", "DeepNN"])\
+            result = pd.DataFrame({"Normal": [result1[0][0], 1-result2[0][0]], "Fraud": [result1[0][1], result2[0][0]]}, index=["XGBoost", "DeepNN"])
             
             result = result.style.applymap(lambda x: "background-color: #FF8B8B" if x>=0.5 else "background-color: #ABC9FF")
             st.write("Probability")
             st.write(result)
+
+
+st.markdown("Created by Tri Cao Chanh 2023")
