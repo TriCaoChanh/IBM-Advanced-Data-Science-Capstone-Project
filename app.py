@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import random
 import matplotlib.pyplot as plt
 import seaborn as sns
 from streamlit_folium import folium_static
@@ -18,10 +17,13 @@ sns.set_style("whitegrid")
 sns.despine(left=True, bottom=True)
 
 data_url = "https://raw.githubusercontent.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/main/testSample.csv"
-xgb_pipe_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/xgb_pipe.pkl?raw=true"
-preprocessor_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/preprocessor.pkl?raw=true"
+# xgb_pipe_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/xgb_pipe.pkl?raw=true"
+# preprocessor_url = "https://github.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/blob/main/preprocessor.pkl?raw=true"
 # dnn_url = "https://raw.githubusercontent.com/TriCaoChanh/IBM-Advanced-Data-Science-Capstone-Project/main/dnn.json"
-dnn_url = ".\\dnn"
+
+xgb_pipe_url = ".\\pipeline\\xgb_pipe.pkl"
+preprocessor_url = ".\\pipeline\\preprocessor.pkl"
+dnn_url = ".\\pipeline\\dnn"
 
 st.title("FRAUD DETECTION WEB APP")
 st.markdown("Advanced Data Science Capstone Project offered by IBM on Coursera")
@@ -37,9 +39,11 @@ def load_data():
 
 @st.cache_resource
 def load_model():
-    xgb_pipe = joblib.load(BytesIO(requests.get(xgb_pipe_url).content))
-    preprocessor = joblib.load(BytesIO(requests.get(preprocessor_url).content))
+    # xgb_pipe = joblib.load(BytesIO(requests.get(xgb_pipe_url).content))
+    # preprocessor = joblib.load(BytesIO(requests.get(preprocessor_url).content))
     # dnn = keras.models.model_from_json(requests.get(dnn_url).content)
+    xgb_pipe = joblib.load(xgb_pipe_url)
+    preprocessor = joblib.load(preprocessor_url)
     dnn = keras.models.load_model(dnn_url)
 
     return xgb_pipe, preprocessor, dnn
