@@ -3,7 +3,8 @@
 
 *This project completer has proven a deep understanding on massive parallel data processing, data exploration and visualization, advanced machine learning and deep learning and how to apply his knowledge in a real-world practical use case where he justifies architectural decisions, proves understanding the characteristics of different algorithms, frameworks and technologies and how they impact model performance and scalability.*
 
-**Try it out: [App](https://tricaochanh-ibm-advanced-data-science-capstone-proje-app-88k1ev.streamlit.app)**
+**Try it out:** *[FRAUD DETECTION WEB APP](https://tricaochanh-ibm-advanced-data-science-capstone-proje-app-88k1ev.streamlit.app)* <br>
+**Presentation Video:** *[Advanced Data Science Capstone presentation - Tri Cao Chanh](https://www.youtube.com/watch?v=xJjCuiNWgUU)*
 
 
 **About Dataset**
