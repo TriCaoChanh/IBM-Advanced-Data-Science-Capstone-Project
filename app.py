@@ -8,8 +8,6 @@ import folium
 from datetime import datetime, time
 import joblib
 from tensorflow import keras
-from io import BytesIO
-import requests 
 
 # Set Color Pallete
 custom_colors = ["#ABC9FF", "#FFDEDE", "#FF8B8B", "#EB4747"]
@@ -37,8 +35,8 @@ def load_data():
 def load_model():
     # xgb_pipe = joblib.load(BytesIO(requests.get(xgb_pipe_url).content))
     # preprocessor = joblib.load(BytesIO(requests.get(preprocessor_url).content))
-    xgb_pipe = joblib.load(xgb_pipe_url)
-    preprocessor = joblib.load(preprocessor_url)
+    xgb_pipe = joblib.load(open(os.path.join(xgb_pipe_url),"rb"))
+    preprocessor = joblib.load(open(os.path.join(preprocessor_url),"rb"))
     dnn = keras.models.load_model(dnn_url)
 
     return xgb_pipe, preprocessor, dnn
